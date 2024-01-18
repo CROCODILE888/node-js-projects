@@ -1,7 +1,7 @@
 import { Component, createNgModule } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { compileNgModule } from '@angular/compiler';
+// import { compileNgModule } from '@angular/compiler';
 
 @Component({
   selector: 'app-login-page',
@@ -11,7 +11,7 @@ import { compileNgModule } from '@angular/compiler';
         <form>
           <h1>Login</h1>
           <label for="email">E-mail</label>
-          <input type="text" name="email" id="email" placeholder="email" [(ngModel)]="username"/>
+          <input type="text" name="email" id="email" placeholder="email" [(ngModel)]="username" required/>
           <label for="password">Password</label>
           <input
             type="password"
@@ -19,7 +19,9 @@ import { compileNgModule } from '@angular/compiler';
             id="password"
             placeholder="password"
             [(ngModel)]="password"
+            required
           />
+          <div class="error-message" *ngIf="errorMessage">{{errorMessage}}</div>
           <button type="submit" value="LOGIN" (click)="login()">login</button>
           <!-- <p class="message">
             Not registered? <a href="#">Create an account</a>
@@ -37,7 +39,9 @@ import { compileNgModule } from '@angular/compiler';
     width: 100%;
     height: 100%;
   }
-  
+  .error-message {
+    color: red;
+  }
   .wrapper-form {
     width: 25%;
     margin: 200px auto 0 auto;
@@ -100,11 +104,16 @@ export class LoginPageComponent {
   username: string = '';
   password: string = '';
   message: string = '';
+  errorMessage: string='';
 
   constructor(private http: HttpClient, private router: Router){};
 
   login(){
-    console.log(this.username, this.password);
+    if (!this.username || !this.password){
+      this.errorMessage="Please enter both, username and password.";
+      return;
+    }
+    // console.log(this.username, this.password);
     this.http.post<any>('http://localhost:3000/login', {username:this.username, password: this.password}).subscribe(
       (response)=>{
         this.router.navigate(['/dashboard']);
@@ -113,7 +122,7 @@ export class LoginPageComponent {
       },
       (error)=>{
         console.error(error);
-        
+        this.errorMessage='Invalid credentials. Please try again';
       }
       );
     
