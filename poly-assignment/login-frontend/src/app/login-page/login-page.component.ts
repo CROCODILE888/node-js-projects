@@ -1,7 +1,6 @@
 import { Component, createNgModule } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-// import { compileNgModule } from '@angular/compiler';
 
 @Component({
   selector: 'app-login-page',
@@ -114,7 +113,7 @@ export class LoginPageComponent {
       return;
     }
     // console.log(this.username, this.password);
-    this.http.post<any>('http://localhost:3000/login', {username:this.username, password: this.password}).subscribe(
+    this.http.post<any>('http://localhost:8000/login', {username:this.username, password: this.password}).subscribe(
       (response)=>{
         this.router.navigate(['/dashboard']);
         this.message=response.message;
